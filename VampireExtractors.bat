@@ -7,6 +7,7 @@ set /a sprites=0
 set atlasname=none
 set /a sprleft=0
 set sprname=none
+set /a percent=0
 set /a x=0
 set /a y=0
 set /a w=0
@@ -63,11 +64,15 @@ for /f "skip=12 tokens=2 delims={} " %%a in (!atlasname!.txt) do (
 		cls
 		set /a i=0
 		set /a sprleft=!sprleft!+1
+		set /a percent=100*!sprleft!/!sprites!
 	)
 	if !i! equ 1 (
 		set out=!out:~1,-2!
 		set sprname=!out!
 		echo Processing !sprname!...
+		set /a sprleft=!sprleft!+1
+		echo Progress: !sprleft!/!sprites! (!percent!%%^)
+		set /a sprleft=!sprleft!-1
 	)
 	if !i! equ 12 (
 		set out=!out:~0,-1!
@@ -99,12 +104,14 @@ cls
 md config >NUL 2>&1
 set /a i=0
 set /a sprleft=0
+set /a percent=0
 for /f "skip=11 delims=" %%c in (!atlasname!.txt) do (
 	set out=%%c
 	set /a i=!i!+1
 	if !i! equ 22 (
 	set /a i=1
 	set /a sprleft=!sprleft!+1
+	set /a percent=100*!sprleft!/!sprites!
 	cls
 	)
 	if !sprleft! equ !sprites! goto :finale
@@ -116,8 +123,9 @@ for /f "skip=11 delims=" %%c in (!atlasname!.txt) do (
 		set sprname=!out:~18,-6!.txt
 		ren config\temp.txt !sprname! >NUL 2>&1
 		echo Creating config for !sprname!...
+		echo Progress: !sprleft!/!sprites! (!percent!%%^)
 	)
-		echo !out!>> config\!sprname!
+		echo  !out!>> config\!sprname!
 )
 
 :nojson
